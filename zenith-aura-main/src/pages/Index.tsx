@@ -4,7 +4,6 @@ import { startPreloading } from "@/lib/framePreloader";
 import CustomCursor from "@/components/CustomCursor";
 import GoldParticleScene from "@/components/GoldParticleScene";
 import SVGFilters from "@/components/SVGFilters";
-import MuxVideoIntro from "@/components/MuxVideoIntro";
 import CinematicVideo from "@/components/CinematicVideo";
 import BrandingSection from "@/components/BrandingSection";
 import HeroSection from "@/components/HeroSection";
@@ -19,14 +18,12 @@ import MorphCard from "@/components/MorphCard";
 
 export default function Index() {
   const [loading, setLoading] = useState(true);
-  const [showIntro, setShowIntro] = useState(true);
 
   useEffect(() => {
     startPreloading();
   }, []);
 
   const handleLoadComplete = useCallback(() => setLoading(false), []);
-  const handleIntroComplete = useCallback(() => setShowIntro(false), []);
 
   return (
     <>
@@ -41,8 +38,6 @@ export default function Index() {
         <GoldParticleScene />
 
         <main className="relative">
-          {showIntro && <MuxVideoIntro onComplete={handleIntroComplete} />}
-
           <CinematicVideo />
           <BrandingSection />
           <HeroSection />

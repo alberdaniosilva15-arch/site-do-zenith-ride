@@ -79,9 +79,9 @@ export default function MorphCard() {
           </div>
           
           <div className="mt-8 pt-8 border-t border-gold-royal/20">
-            <div className="flex items-center justify-center gap-8 font-mono text-[10px] tracking-[0.4em] uppercase text-muted-foreground">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8 font-mono text-[10px] tracking-[0.4em] uppercase text-muted-foreground">
               <span>+244 997 608 404</span>
-              <span>◆</span>
+              <span className="hidden sm:inline">◆</span>
               <span>hello@zenith.ao</span>
             </div>
           </div>
