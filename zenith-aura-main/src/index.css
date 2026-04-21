@@ -1,0 +1,261 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&family=Cinzel:wght@400;500;600;700;800;900&family=Cinzel+Decorative:wght@400;700;900&family=IM+Fell+English:ital@0;1&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 3%;
+    --foreground: 43 60% 90%;
+
+    --card: 0 0% 6%;
+    --card-foreground: 43 60% 90%;
+
+    --popover: 0 0% 6%;
+    --popover-foreground: 43 60% 90%;
+
+    --primary: 40 55% 42%;
+    --primary-foreground: 0 0% 3%;
+
+    --secondary: 40 25% 12%;
+    --secondary-foreground: 43 60% 90%;
+
+    --muted: 0 0% 10%;
+    --muted-foreground: 40 15% 55%;
+
+    --accent: 40 70% 55%;
+    --accent-foreground: 0 0% 3%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 40 20% 15%;
+    --input: 40 20% 15%;
+    --ring: 40 55% 42%;
+
+    --radius: 0.25rem;
+
+    /* Gold System */
+    --gold-deep: 33 80% 20%;
+    --gold-royal: 40 55% 54%;
+    --gold-bright: 43 75% 82%;
+    --gold-hot: 43 100% 95%;
+
+    /* Luxury tokens */
+    --font-display: 'Playfair Display', serif;
+    --font-body: 'Inter', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+    --font-cinzel: 'Cinzel', serif;
+    --font-cinzel-decorative: 'Cinzel Decorative', cursive;
+    --font-fell: 'IM Fell English', serif;
+
+    --gradient-gold: linear-gradient(135deg, hsl(33 80% 20%), hsl(40 55% 54%), hsl(43 75% 82%));
+    --gradient-gold-radial: radial-gradient(ellipse at center, hsl(40 55% 54% / 0.3), transparent 70%);
+    --shadow-gold: 0 0 60px hsl(40 55% 42% / 0.15);
+    --shadow-gold-intense: 0 0 120px hsl(40 55% 42% / 0.3);
+
+    --sidebar-background: 0 0% 5%;
+    --sidebar-foreground: 43 60% 90%;
+    --sidebar-primary: 40 55% 42%;
+    --sidebar-primary-foreground: 0 0% 3%;
+    --sidebar-accent: 40 25% 12%;
+    --sidebar-accent-foreground: 43 60% 90%;
+    --sidebar-border: 40 20% 15%;
+    --sidebar-ring: 40 55% 42%;
+  }
+}
+
+/* SVG Filters for grain, turbulence, and color effects */
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-body);
+    overflow-x: hidden;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
+
+  /* Awwwards: hide native scrollbar — Vantablack tradition */
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Telemetry / HUD overlays must never block clicks or scroll */
+  .pointer-none {
+    pointer-events: none;
+  }
+
+  ::selection {
+    background: hsl(40 55% 42% / 0.3);
+    color: hsl(43 100% 95%);
+  }
+}
+
+@layer components {
+  .font-display {
+    font-family: var(--font-display);
+  }
+
+  .font-mono {
+    font-family: var(--font-mono);
+  }
+
+  .font-cinzel {
+    font-family: var(--font-cinzel);
+  }
+
+  .font-cinzel-decorative {
+    font-family: var(--font-cinzel-decorative);
+  }
+
+  .font-fell {
+    font-family: var(--font-fell);
+  }
+
+  .text-gold-gradient {
+    background: var(--gradient-gold);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    /* Awwwards: optimize blend mode for GPU compositing */
+    mix-blend-mode: normal;
+    will-change: contents;
+  }
+
+  /* Metallic shimmer — light streak travelling across gold text */
+  .gold-shimmer {
+    background: linear-gradient(
+      100deg,
+      hsl(33 80% 25%) 0%,
+      hsl(40 55% 54%) 25%,
+      hsl(43 100% 95%) 45%,
+      hsl(43 75% 82%) 55%,
+      hsl(40 55% 54%) 75%,
+      hsl(33 80% 25%) 100%
+    );
+    background-size: 250% 100%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gold-streak 6s ease-in-out infinite;
+    /* Awwwards: optimize blend mode + will-change for GPU compositing */
+    mix-blend-mode: normal;
+    will-change: contents;
+    /* Awwwards: drop-shadow only when GPU compositing is available */
+    filter: drop-shadow(0 0 40px hsl(40 55% 42% / 0.15));
+  }
+
+  /* Neon gold caret + selection inside booking inputs */
+  .neon-input {
+    caret-color: hsl(var(--gold-bright));
+  }
+  .neon-input::selection {
+    background: hsl(var(--gold-royal) / 0.35);
+    color: hsl(var(--gold-hot));
+  }
+  .neon-input:focus {
+    text-shadow: 0 0 12px hsl(var(--gold-royal) / 0.4);
+  }
+
+  .gold-glow {
+    text-shadow: 0 0 40px hsl(40 55% 54% / 0.4), 0 0 80px hsl(40 55% 54% / 0.2);
+  }
+
+  .gold-border {
+    border-image: var(--gradient-gold) 1;
+  }
+
+  /* CSS 3D perspective container */
+  .perspective-container {
+    perspective: 1000px;
+    transform-style: preserve-3d;
+  }
+
+  .perspective-card {
+    transform: translateZ(0);
+    transition: transform 0.7s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  .perspective-card:hover {
+    transform: translateZ(20px) rotateX(2deg) rotateY(-2deg);
+  }
+
+  .vignette {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 100;
+    background: radial-gradient(ellipse at center, transparent 50%, hsl(0 0% 0% / 0.7) 100%);
+  }
+
+  .grain {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 99;
+    opacity: 0.04;
+    /* SVG filter with feTurbulence for procedural noise */
+    filter: url(#grain-filter);
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .luxury-line {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, hsl(var(--gold-royal)), transparent);
+  }
+
+  /* CSS backdrop-filter blur + saturate */
+  .luxury-glass {
+    backdrop-filter: blur(16px) saturate(1.4);
+    -webkit-backdrop-filter: blur(16px) saturate(1.4);
+  }
+}
+
+/* CSS Animations (@keyframes) */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes pulse-gold {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    transform: translateY(60px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shimmer-gold {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes rotate-3d {
+  0% { transform: perspective(600px) rotateY(0deg); }
+  100% { transform: perspective(600px) rotateY(360deg); }
+}
+
+@keyframes gold-streak {
+  0%   { background-position: 200% 50%; }
+  50%  { background-position: 0% 50%; }
+  100% { background-position: -200% 50%; }
+}
