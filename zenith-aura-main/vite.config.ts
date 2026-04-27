@@ -18,4 +18,17 @@ export default defineConfig(({ mode }) => ({
     },
     dedupe: ["react", "react-dom", "react/jsx-runtime", "react/jsx-dev-runtime", "@tanstack/react-query", "@tanstack/query-core"],
   },
+  build: {
+    chunkSizeWarningLimit: 1200,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vendor-react': ['react', 'react-dom', 'react-router-dom'],
+          'vendor-three': ['three', '@react-three/fiber'],
+          'vendor-gsap': ['gsap', 'lenis'],
+          'vendor-ui': ['lucide-react', 'framer-motion']
+        }
+      }
+    }
+  }
 }));
