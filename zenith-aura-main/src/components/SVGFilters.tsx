@@ -14,8 +14,8 @@ export default function SVGFilters() {
         <filter id="grain-filter" x="0%" y="0%" width="100%" height="100%">
           <feTurbulence
             type="fractalNoise"
-            baseFrequency="0.65"
-            numOctaves="4"
+            baseFrequency="0.9"
+            numOctaves="2"
             stitchTiles="stitch"
             result="noise"
           />

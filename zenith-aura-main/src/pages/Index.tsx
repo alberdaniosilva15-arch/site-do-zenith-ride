@@ -11,19 +11,28 @@ import MorphSection from "@/components/MorphSection";
 import InfoSection from "@/components/InfoSection";
 import BookingTerminal from "@/components/BookingTerminal";
 import FleetSection from "@/components/FleetSection";
+import ShatterLab from "@/components/ShatterLab";
 import FooterSection from "@/components/FooterSection";
 import LoadingScreen from "@/components/LoadingScreen";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import MorphCard from "@/components/MorphCard";
+import FixedNav from "@/components/FixedNav";
+import BackToTop from "@/components/BackToTop";
 
 export default function Index() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Garantir que a página recarrega sempre no topo
+    window.history.scrollRestoration = "manual";
+    window.scrollTo(0, 0);
     startPreloading();
   }, []);
 
-  const handleLoadComplete = useCallback(() => setLoading(false), []);
+  const handleLoadComplete = useCallback(() => {
+    window.scrollTo(0, 0); // Forçar topo ao terminar o preloader
+    setLoading(false);
+  }, []);
 
   return (
     <>
@@ -36,6 +45,7 @@ export default function Index() {
         <div className="grain" />
         <CustomCursor />
         <GoldParticleScene />
+        <FixedNav />
 
         <main className="relative">
           <CinematicVideo />
@@ -46,11 +56,13 @@ export default function Index() {
           <BookingTerminal />
           <FleetSection />
           <MorphCard />
+          <ShatterLab />
           <FooterSection />
         </main>
       </SmoothScroll>
 
       <WhatsAppButton show={!loading} />
+      <BackToTop />
     </>
   );
 }

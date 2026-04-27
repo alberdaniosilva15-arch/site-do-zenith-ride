@@ -22,7 +22,18 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
     startPreloading().then(() => {
       targetRef.current = 1;
     });
-    return unsub;
+    
+    // Safety fallback: Force complete after 10 seconds if frames are missing
+    const fallbackTimer = setTimeout(() => {
+      if (!finishedRef.current) {
+        targetRef.current = 1;
+      }
+    }, 10000);
+    
+    return () => {
+      unsub();
+      clearTimeout(fallbackTimer);
+    };
   }, []);
 
   // Smoothly interpolate displayed % toward target so the counter feels analogue.
@@ -88,8 +99,11 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
         />
       </div>
 
-      <p className="font-mono text-[9px] tracking-[0.5em] uppercase text-muted-foreground/70 mt-6">
+      <p className="font-mono text-[9px] tracking-[0.5em] uppercase text-muted-foreground/70 mt-6 text-center">
         264 quadros · pré-carregamento
+      </p>
+      <p className="font-mono text-[8px] tracking-[0.3em] uppercase text-gold-royal/80 mt-3 text-center max-w-[280px]">
+        O site deve carregar para a melhor experiência possível
       </p>
 
       <div className="absolute bottom-6 left-0 right-0 flex items-center justify-between px-6 font-mono text-[9px] tracking-[0.4em] uppercase text-muted-foreground/60">

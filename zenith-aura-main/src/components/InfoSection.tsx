@@ -2,8 +2,40 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import BrandLogo from "./BrandLogo";
+import SplitText from "./SplitText";
 
 gsap.registerPlugin(ScrollTrigger);
+
+function AnimatedCounter({ end, suffix = "", prefix = "" }: { end: string | number, suffix?: string, prefix?: string }) {
+  const nodeRef = useRef<HTMLDivElement>(null);
+  
+  useEffect(() => {
+    if (!nodeRef.current) return;
+    
+    // Simple logic to animate numeric part if possible
+    const numericPart = String(end).replace(/\D/g, "");
+    if (!numericPart) return; // Not a number, skip count up
+    
+    const obj = { val: 0 };
+    gsap.to(obj, {
+      val: Number(numericPart),
+      duration: 2,
+      ease: "power2.out",
+      scrollTrigger: {
+        trigger: nodeRef.current,
+        start: "top 80%",
+      },
+      onUpdate: () => {
+        if (nodeRef.current) {
+          const formatted = Math.floor(obj.val).toString().padStart(numericPart.length, "0");
+          nodeRef.current.innerText = prefix + String(end).replace(numericPart, formatted) + suffix;
+        }
+      }
+    });
+  }, [end, prefix, suffix]);
+
+  return <div ref={nodeRef} className="font-display text-3xl text-gold-gradient mb-2">{end}</div>;
+}
 
 export default function InfoSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -12,6 +44,7 @@ export default function InfoSection() {
     <section 
       ref={sectionRef}
       className="relative min-h-screen flex items-center justify-center bg-background overflow-hidden"
+      style={{ clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)" }}
     >
       {/* Background gradient - Vantablack style */}
       <div 
@@ -21,41 +54,56 @@ export default function InfoSection() {
         }}
       />
 
-      {/* Content */}
-      <div className="relative z-[2] max-w-4xl mx-auto px-6 text-center">
+      {/* Content with Parallax */}
+      <div 
+        className="relative z-[2] max-w-4xl mx-auto px-6 pt-24 text-center parallax-content"
+        ref={(el) => {
+          if (!el) return;
+          gsap.to(el, {
+            y: -100,
+            ease: "none",
+            scrollTrigger: {
+              trigger: sectionRef.current,
+              start: "top bottom",
+              end: "bottom top",
+              scrub: true
+            }
+          });
+        }}
+      >
         <BrandLogo size="lg" className="mx-auto mb-8" />
         
         <h2 className="font-display text-4xl sm:text-6xl font-bold text-gold-gradient mb-6">
-          O Futuro da Mobilidade
+          <SplitText text="O Futuro da Mobilidade" />
         </h2>
         
         <div className="luxury-line mx-auto mb-8 w-32" />
         
         <p className="font-body text-lg text-muted-foreground mb-12 max-w-2xl mx-auto">
           Combinamos tecnologia de ponta com luxo refinado para criar uma experiência 
-          de mobilidade sem igual em Angola. Cada perjalanan é um evento cinemático.
+          de mobilidade sem igual em Angola. Cada viagem é um evento cinemático.
         </p>
 
         {/* Features grid */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 mt-12">
           <div className="text-center">
-            <div className="font-display text-3xl text-gold-gradient mb-2">24/7</div>
+            <AnimatedCounter end="24/7" />
             <div className="font-mono text-[10px] tracking-[0.4em] uppercase text-muted-foreground">
               Operação
             </div>
           </div>
           
           <div className="text-center">
-            <div className="font-display text-3xl text-gold-gradient mb-2">♥</div>
+            <AnimatedCounter end="5" suffix="★" />
             <div className="font-mono text-[10px] tracking-[0.4em] uppercase text-muted-foreground">
-              Premium
+              Conforto
             </div>
           </div>
           
           <div className="text-center">
-            <div className="font-display text-3xl text-gold-gradient mb-2">5★</div>
+            <AnimatedCounter end="04 MIN" />
             <div className="font-mono text-[10px] tracking-[0.4em] uppercase text-muted-foreground">
-              Conforto
+              Resposta
             </div>
           </div>
         </div>

@@ -22,6 +22,21 @@ export default function MorphSection() {
   const [frames, setFrames] = useState<HTMLImageElement[]>([]);
   const stateRef = useRef({ current: 0, target: 0 });
   const rafRef = useRef<number | null>(null);
+  const canvasSizeRef = useRef({ dpr: 1, width: 0, height: 0 });
+
+  useEffect(() => {
+    if (canvasRef.current) {
+      canvasSizeRef.current = setupCanvas(canvasRef.current);
+    }
+    
+    const handleResize = () => {
+      if (canvasRef.current) {
+        canvasSizeRef.current = setupCanvas(canvasRef.current);
+      }
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   useEffect(() => {
     startPreloading().then(() => {
@@ -36,7 +51,7 @@ export default function MorphSection() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const { dpr, width, height } = setupCanvas(canvas);
+    const { dpr, width, height } = canvasSizeRef.current;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     stateRef.current.current += (stateRef.current.target - stateRef.current.current) * LERP;

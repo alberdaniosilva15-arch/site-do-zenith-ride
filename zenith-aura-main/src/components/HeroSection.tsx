@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { getCachedImagesFor, startPreloading } from "@/lib/framePreloader";
 import BrandLogo from "./BrandLogo";
+import gsap from "gsap";
 
 const FRAME_COUNT = 128;
 const LERP = 0.18;
@@ -23,15 +24,19 @@ export default function HeroSection() {
   const [frames, setFrames] = useState<HTMLImageElement[]>([]);
   const stateRef = useRef({ current: 0, target: 0 });
   const rafRef = useRef<number | null>(null);
+  const canvasSizeRef = useRef({ dpr: 1, width: 0, height: 0 });
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     setIsMobile(window.innerWidth < 768);
+    if (canvasRef.current) {
+      canvasSizeRef.current = setupCanvas(canvasRef.current);
+    }
     
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768);
       if (canvasRef.current) {
-        setupCanvas(canvasRef.current);
+        canvasSizeRef.current = setupCanvas(canvasRef.current);
       }
     };
     
@@ -52,7 +57,7 @@ export default function HeroSection() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const { dpr, width, height } = setupCanvas(canvas);
+    const { dpr, width, height } = canvasSizeRef.current;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     stateRef.current.current += (stateRef.current.target - stateRef.current.current) * LERP;
@@ -149,9 +154,23 @@ export default function HeroSection() {
           </div>
         </div>
         
-        <div className="absolute bottom-12 sm:bottom-16 left-1/2 -translate-x-1/2 z-50 flex flex-col items-center gap-2">
+        <div 
+          className="absolute bottom-12 sm:bottom-16 left-1/2 -translate-x-1/2 z-50 flex flex-col items-center gap-2 cursor-pointer"
+          onClick={() => {
+            window.scrollTo({
+              top: window.innerHeight * 0.8,
+              behavior: "smooth"
+            });
+          }}
+          ref={(el) => {
+            if (el && !el.dataset.animated) {
+              el.dataset.animated = "true";
+              gsap.to(el, { y: 10, yoyo: true, repeat: -1, ease: "power1.inOut", duration: 1 });
+            }
+          }}
+        >
           <div className="w-px h-8 sm:h-12 bg-gradient-to-b from-gold-royal to-transparent" />
-          <span className="font-mono text-[8px] sm:text-[10px] tracking-[0.3em] uppercase text-muted-foreground">
+          <span className="font-mono text-[8px] sm:text-[10px] tracking-[0.3em] uppercase text-muted-foreground hover:text-gold-royal transition-colors">
             Scroll
           </span>
         </div>

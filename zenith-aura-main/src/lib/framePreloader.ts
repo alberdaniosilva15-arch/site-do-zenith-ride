@@ -35,7 +35,6 @@ function notify() {
 
 function srcFor(set: FrameSet, i: number) {
   const path = `/${set.folder}/${String(i).padStart(set.padding, "0")}.${set.ext}`;
-  console.log(`[framePreloader] Loading: ${path}`);
   return path;
 }
 
@@ -44,12 +43,10 @@ function loadOne(src: string): Promise<HTMLImageElement | null> {
     const img = new Image();
     (img as HTMLImageElement & { decoding?: string }).decoding = "async";
     img.onload = () => {
-      console.log(`[framePreloader] Loaded: ${src}`);
       cache.set(src, img);
       resolve(img);
     };
     img.onerror = () => {
-      console.log(`[framePreloader] ERROR: ${src} not found`);
       resolve(null);
     };
     img.src = src;
