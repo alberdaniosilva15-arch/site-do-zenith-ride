@@ -276,7 +276,7 @@ function generateGrid(width: number, height: number, gridSize: number = 250): Gr
 
 function ParticleImage({ imageUrl }: { imageUrl: string }) {
   const pointsRef = useRef<THREE.Points>(null);
-  const { camera } = useThree();
+  const { viewport } = useThree();
 
   const [texture, setTexture] = useState<THREE.Texture | null>(null);
   const [imgDimensions, setImgDimensions] = useState({ w: 1, h: 1 });
@@ -379,8 +379,14 @@ function ParticleImage({ imageUrl }: { imageUrl: string }) {
 
   if (!texture) return null;
 
+  // Ensure the car perfectly fits within the screen's width (viewport)
+  const aspect = imgDimensions.h === 0 ? 1 : imgDimensions.w / imgDimensions.h;
+  const planeW = 4.0 * aspect;
+  const maxW = viewport.width * 0.95; // 95% of screen width to leave tiny padding
+  const responsiveScale = isMobile() ? Math.min(1.0, maxW / planeW) : 1.0;
+
   return (
-    <points ref={pointsRef} scale={isMobile() ? 0.55 : 1.0}>
+    <points ref={pointsRef} scale={responsiveScale}>
       <bufferGeometry>
         <bufferAttribute attach="attributes-position" args={[gridData.positions, 3]} />
         <bufferAttribute attach="attributes-aUv" args={[gridData.uvs, 2]} />
