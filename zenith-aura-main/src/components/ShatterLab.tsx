@@ -2,6 +2,8 @@ import { useEffect, useRef, useMemo, useState } from "react";
 import { Canvas, useFrame, useThree, extend } from "@react-three/fiber";
 import * as THREE from "three";
 
+const isMobile = () => typeof window !== "undefined" && window.innerWidth < 768;
+
 /* ═══════════════════════════════════════════════════════════════
    GLSL: Curl Noise (3D)
    Classic implementation based on Akella / Stefan Gustavson
@@ -290,9 +292,10 @@ function ParticleImage({ imageUrl }: { imageUrl: string }) {
     });
   }, [imageUrl]);
 
-  // Grid geometry — 200x200 = 40k particles (optimal balance quality/performance)
+  // Grid geometry — adaptativo: 120x120 mobile (14.4k) vs 200x200 desktop (40k)
   const gridData = useMemo(() => {
-    return generateGrid(imgDimensions.w, imgDimensions.h, 200);
+    const size = isMobile() ? 120 : 200;
+    return generateGrid(imgDimensions.w, imgDimensions.h, size);
   }, [imgDimensions]);
 
   // Mouse position (world space approximation)
@@ -377,7 +380,7 @@ function ParticleImage({ imageUrl }: { imageUrl: string }) {
   if (!texture) return null;
 
   return (
-    <points ref={pointsRef}>
+    <points ref={pointsRef} scale={isMobile() ? 0.55 : 1.0}>
       <bufferGeometry>
         <bufferAttribute attach="attributes-position" args={[gridData.positions, 3]} />
         <bufferAttribute attach="attributes-aUv" args={[gridData.uvs, 2]} />
@@ -425,8 +428,9 @@ function ZenithTextParticles() {
       for (let x = 0; x < 512; x += step) {
         const i = (y * 512 + x) * 4;
         if (imgData[i] > 60) {
-          // Largura 4.0 e Y 1.7 — bem dentro dos limites da câmara
-          pts.push((x / 512 - 0.5) * 4.0, -(y / 64 - 0.5) * 0.5 + 1.7, 0);
+          // Adjust text scale on mobile to prevent clipping
+          const scaleW = isMobile() ? 2.5 : 4.0;
+          pts.push((x / 512 - 0.5) * scaleW, -(y / 64 - 0.5) * 0.5 + 1.7, 0);
           phs.push(Math.random());
         }
       }
@@ -528,7 +532,7 @@ export default function ShatterLab() {
       <div className="shatter-lab-canvas absolute inset-0 z-[1]">
         {isVisible && (
           <Canvas
-            camera={{ position: [0, 0, 5], fov: 50 }}
+            camera={{ position: [0, 0, isMobile() ? 6.5 : 5], fov: isMobile() ? 60 : 50 }}
             dpr={1}
             gl={{ antialias: false, alpha: true, powerPreference: "high-performance" }}
           >

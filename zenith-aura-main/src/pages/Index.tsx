@@ -3,7 +3,6 @@ import SmoothScroll from "@/components/SmoothScroll";
 import { startPreloading } from "@/lib/framePreloader";
 import CustomCursor from "@/components/CustomCursor";
 import GoldParticleScene from "@/components/GoldParticleScene";
-import SVGFilters from "@/components/SVGFilters";
 import CinematicVideo from "@/components/CinematicVideo";
 import BrandingSection from "@/components/BrandingSection";
 import HeroSection from "@/components/HeroSection";
@@ -37,8 +36,6 @@ export default function Index() {
   return (
     <>
       {loading && <LoadingScreen onComplete={handleLoadComplete} />}
-
-      <SVGFilters />
 
       <SmoothScroll>
         <div className="vignette" />
